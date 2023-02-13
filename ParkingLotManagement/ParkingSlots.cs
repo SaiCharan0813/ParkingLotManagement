@@ -8,6 +8,10 @@ namespace ParkingLotManagement
 {
     public class ParkingSlots
     {
+        public enum VehicleType
+        {
+            TwoWheeler=1,FourWheeler,HeavyVehicle
+        }
         public static Vehicle[] twoWheeler;
         public static Vehicle[] fourWheeler;
         public static Vehicle[] heavyVehicle;

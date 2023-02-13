@@ -3,27 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace ParkingLotManagement
 {
     public class Vehicle
     {
-        public static int TicketId = 1;
-        public int TokenNumber { get; set; }
-        public DateTime InTime { get; set; }
-        public DateTime OutTime { get; set; }
-        public TimeSpan Duration { get; set; }
+        Ticket ticket=new Ticket();
         public string VehicleNumber { get; set; }
-        public double Amount { get; set; }
-        
-        public void AddTwoWheeler()
+        public string VehicleType { get; set; }
+        public void AddVehicle(string slots)
         {
-            if (ParkingSlots.twoWheeler.Contains(null))
+            Vehicle[] newVehicle;
+            if (slots == "twoWheeler"){
+                newVehicle = ParkingSlots.twoWheeler;
+            }
+            else if (slots == "fourWheeler")
             {
-                var indexNumber = ParkingSlots.twoWheeler.Length;
-                for (int i = 0; i < ParkingSlots.twoWheeler.Length; i++)
+                newVehicle  = ParkingSlots.fourWheeler;
+            }
+            else
+            {
+                newVehicle  = ParkingSlots.heavyVehicle;
+            }
+            if (newVehicle.Contains(null))
+            {
+                var indexNumber = newVehicle.Length;
+                for (int i = 0; i < newVehicle.Length; i++)
                 {
-                    if (ParkingSlots.twoWheeler[i] == null)
+                    if (newVehicle[i] == null)
                     {
                         indexNumber = i;
                         
@@ -31,11 +39,11 @@ namespace ParkingLotManagement
                     }
                 }
 
-                if (indexNumber != ParkingSlots.twoWheeler.Length)
+                if (indexNumber != newVehicle.Length)
                 {
-                    Vehicle twoWheelerVehicle = new Vehicle();
-                    twoWheelerVehicle.TokenNumber = TicketId;
-                    Vehicle.TicketId += 1;
+                    Vehicle vehicleToPark = new Vehicle();
+                    vehicleToPark.ticket.TokenNumber = Ticket.TicketId;
+                    Ticket.TicketId += 1;
                 enterTwoWheelerVehicleNumber:
 
 
@@ -43,8 +51,8 @@ namespace ParkingLotManagement
 
                     try
                     {
-                        twoWheelerVehicle.VehicleNumber = Console.ReadLine();
-                        if (twoWheelerVehicle.VehicleNumber == "")
+                        vehicleToPark.VehicleNumber = Console.ReadLine();
+                        if (vehicleToPark.VehicleNumber == "")
                         {
                             Console.WriteLine("Enter valid Vehicle Number");
                             goto enterTwoWheelerVehicleNumber;
@@ -55,73 +63,29 @@ namespace ParkingLotManagement
                         Console.WriteLine("Enter valid Vehicle number");
                         goto enterTwoWheelerVehicleNumber;
                     }
-                    twoWheelerVehicle.InTime = DateTime.Now;
-                    ParkingSlots.twoWheeler[indexNumber] = twoWheelerVehicle;
-                    Console.WriteLine("Your vehicle number is: "+twoWheelerVehicle.VehicleNumber);
-                    Console.WriteLine("Your vehicle In Time is: "+twoWheelerVehicle.InTime);
-                    Console.WriteLine("Your Vehicle Token Number is:"+twoWheelerVehicle.TokenNumber);
-                    
-                }
-                else
-                {
-                    Console.WriteLine("No Slots Available");
-                }
-
-
-            }
-            else
-            {
-                Console.WriteLine("No slots available");
-            }
-
-
-
-        }
-        public void AddFourWheeler()
-        {
-            
-            if (ParkingSlots.fourWheeler.Contains(null))
-            {
-                var indexNumber = ParkingSlots.fourWheeler.Length;
-                for (int i = 0; i < ParkingSlots.fourWheeler.Length; i++)
-                {
-                    if (ParkingSlots.fourWheeler[i] == null)
+                    vehicleToPark.ticket.InTime = DateTime.Now;
+                    if (slots == "twoWheeler")
                     {
-                        indexNumber = i;
-                        break;
+                        ParkingSlots.twoWheeler[indexNumber] = vehicleToPark;
+                
                     }
-                }
 
-                if (indexNumber != ParkingSlots.fourWheeler.Length)
-                {
-                    Vehicle fourWheelerVehicle = new Vehicle();
-                    fourWheelerVehicle.TokenNumber = TicketId;
-                    Vehicle.TicketId += 1;
-                enterFourWheelerVehicleNumber:
-
-
-                    Console.WriteLine("Enter vehicle number: ");
-
-                    try
+                    else if (slots == "fourWheeler")
                     {
-                        fourWheelerVehicle.VehicleNumber = Console.ReadLine();
-                        if (fourWheelerVehicle.VehicleNumber == "")
-                        {
-                            Console.WriteLine("Enter valid Vehicle Number");
-                            goto enterFourWheelerVehicleNumber;
-                        }
-                    }
-                    catch (FormatException ex)
-                    {
-                        Console.WriteLine("Enter valid Vehicle number");
-                        goto enterFourWheelerVehicleNumber;
-                    }
-                    fourWheelerVehicle.InTime = DateTime.Now;
-                    ParkingSlots.fourWheeler[indexNumber] = fourWheelerVehicle;
-                    Console.WriteLine("Your vehicle number is: " + fourWheelerVehicle.VehicleNumber);
-                    Console.WriteLine("Your vehicle In Time is: " + fourWheelerVehicle.InTime);
-                    Console.WriteLine("Your Vehicle Token Number is:" + fourWheelerVehicle.TokenNumber);
+                        ParkingSlots.fourWheeler[indexNumber] = vehicleToPark;
+                        
 
+                    }
+                    else
+                    {
+                        ParkingSlots.heavyVehicle[indexNumber] = vehicleToPark;
+                        
+                    }
+                    vehicleToPark.VehicleType = slots;
+                    Console.WriteLine("Your vehicle Type is: "+vehicleToPark.VehicleType);
+                    Console.WriteLine("Your vehicle number is: " + vehicleToPark.VehicleNumber);
+                    Console.WriteLine("Your vehicle In Time is: " + vehicleToPark.ticket.InTime);
+                    Console.WriteLine("Your Vehicle Token Number is:" + vehicleToPark.ticket.TokenNumber);
                 }
                 else
                 {
@@ -135,70 +99,26 @@ namespace ParkingLotManagement
                 Console.WriteLine("No slots available");
             }
         }
-        public void AddHeavyVehicle()
+        public void UnParkVehicle(int twoWheeler, int fourWheeler, int heavyVehicle,string slots)
         {
-            if (ParkingSlots.heavyVehicle.Contains(null))
+            Vehicle[] newVehicle;
+
+            Console.WriteLine(slots);
+            if (slots == "twoWheeler")
             {
-                var indexNumber = ParkingSlots.heavyVehicle.Length;
-                for (int i = 0; i < ParkingSlots.heavyVehicle.Length; i++)
-                {
-                    if (ParkingSlots.heavyVehicle[i] == null)
-                    {
-                        indexNumber = i;
-                        break;
-                    }
-                }
-
-                if (indexNumber != ParkingSlots.heavyVehicle.Length)
-                {
-                    Vehicle heavyWheelerVehicle = new Vehicle();
-                    heavyWheelerVehicle.TokenNumber = TicketId;
-                    Vehicle.TicketId += 1;
-
-                  
-                   
-                enterHeavyVehicleNumber:
-
-
-                    Console.WriteLine("Enter vehicle number: ");
-
-                    try
-                    {
-                        heavyWheelerVehicle.VehicleNumber = Console.ReadLine();
-                        if (heavyWheelerVehicle.VehicleNumber == "")
-                        {
-                            Console.WriteLine("Enter valid Vehicle Number");
-                            goto enterHeavyVehicleNumber;
-                        }
-                    }
-                    catch (FormatException ex)
-                    {
-                        Console.WriteLine("Enter valid Vehicle number");
-                        goto enterHeavyVehicleNumber;
-                    }
-                    heavyWheelerVehicle.InTime = DateTime.Now;
-                    ParkingSlots.heavyVehicle[indexNumber] = heavyWheelerVehicle;
-                    Console.WriteLine("Your vehicle number is: " + heavyWheelerVehicle.VehicleNumber);
-                    Console.WriteLine("Your vehicle In Time is: " + heavyWheelerVehicle.InTime);
-                    Console.WriteLine("Your Vehicle Token Number is:" + heavyWheelerVehicle.TokenNumber);
-                }
-                else
-                {
-                    Console.WriteLine("No Slots Available");
-                }
-
-
+                newVehicle = ParkingSlots.twoWheeler;
+            }
+            else if (slots == "fourWheeler")
+            {
+                newVehicle = ParkingSlots.fourWheeler;
             }
             else
             {
-                Console.WriteLine("No slots available");
+                newVehicle = ParkingSlots.heavyVehicle;
             }
-        }
-        public void UnParkTwoWheeler(int twoWheeler, int fourWheeler, int heavyVehicle)
-        {
-            int twoWheelerSlotsOccupaid = ParkingSlots.twoWheeler.Count(s => s != null);
-            int twoWheelerSlotsAvailable = twoWheeler - twoWheelerSlotsOccupaid;
-            if (twoWheelerSlotsAvailable == twoWheeler)
+            int slotsOccupaid = newVehicle.Count(s => s != null);
+            int slotsAvailable = twoWheeler - slotsOccupaid;
+            if (slotsAvailable == twoWheeler)
             {
                 Console.WriteLine("No vehicles to unpark");
             }
@@ -217,15 +137,15 @@ namespace ParkingLotManagement
                     Console.WriteLine("Enter valid Token id number");
                     goto enterTokenIdNumber;
                 }
-                var index = ParkingSlots.twoWheeler.Length;
+                var index = newVehicle.Length;
                 bool isVehicleExist = false;
-                for (int i = 0; i < ParkingSlots.twoWheeler.Length; i++)
+                for (int i = 0; i < newVehicle.Length; i++)
                 {
 
-                    if (ParkingSlots.twoWheeler[i].TokenNumber == vehicleTokenId)
+                    if (newVehicle[i].ticket.TokenNumber == vehicleTokenId)
                     {
                         isVehicleExist = true;
-                        Console.WriteLine(ParkingSlots.twoWheeler[i].VehicleNumber);
+                        Console.WriteLine(newVehicle[i].VehicleNumber);
 
                         index = i;
 
@@ -236,16 +156,28 @@ namespace ParkingLotManagement
 
                 if (isVehicleExist == true)
                 {
-                    Console.WriteLine("Your Vehicle number: "+ParkingSlots.twoWheeler[index].VehicleNumber);
-                    ParkingSlots.twoWheeler[index].OutTime = DateTime.Now;
-                    Console.WriteLine("Vehicle In Time: " + ParkingSlots.twoWheeler[index].InTime);
-                    Console.WriteLine("Vehicle out time: " + ParkingSlots.twoWheeler[index].OutTime);
-                    ParkingSlots.twoWheeler[index].Duration = ParkingSlots.twoWheeler[index].OutTime.Subtract(ParkingSlots.twoWheeler[index].InTime);
-                    Console.WriteLine("Toatal duration of the vehicle: " + ParkingSlots.twoWheeler[index].Duration);
-                    ParkingSlots.twoWheeler[index].Amount = ParkingSlots.twoWheeler[index].Duration.TotalSeconds * 0.1; ;
-                    Console.WriteLine("Amount to be paid: " + ParkingSlots.twoWheeler[index].Amount + " Rupees");
-                    ParkingSlots.twoWheeler[index] = null;
+                    Console.WriteLine("Your Vehicle Type is: "+newVehicle[index].VehicleType);
+                    Console.WriteLine("Your Vehicle number: "+ newVehicle[index].VehicleNumber);
+                    newVehicle[index].ticket.OutTime = DateTime.Now;
+                    Console.WriteLine("Vehicle In Time: " + newVehicle[index].ticket.InTime);
+                    Console.WriteLine("Vehicle out time: " + newVehicle[index].ticket.OutTime);
+                    newVehicle[index].ticket.Duration = newVehicle[index].ticket.OutTime.Subtract(newVehicle[index].ticket.InTime);
+                    Console.WriteLine("Toatal duration of the vehicle: " + newVehicle[index].ticket.Duration);
+                    newVehicle[index].ticket.Amount = newVehicle[index].ticket.Duration.TotalSeconds * 0.1; ;
+                    Console.WriteLine("Amount to be paid: " + newVehicle[index].ticket.Amount + " Rupees");
+                    if (slots == "twoWheeler")
+                    {
+                        ParkingSlots.twoWheeler[index] = null;
+                    }
+                    else if(slots=="fourWheeler")
+                    {
+                        ParkingSlots.fourWheeler[index] = null;
+                    }
+                    else
+                    {
+                        ParkingSlots.heavyVehicle[index] = null;
 
+                    }
                 }
                 else
                 {
@@ -253,118 +185,6 @@ namespace ParkingLotManagement
                 }
             }
 
-        }
-        public void UnParkFourWheeler(int twoWheeler, int fourWheeler, int heavyVehicle)
-        {
-            int fourWheelerSlotsOccupaid = ParkingSlots.fourWheeler.Count(s => s != null);
-            int fourWheelerSlotsAvailable = fourWheeler - fourWheelerSlotsOccupaid;
-            if (fourWheelerSlotsAvailable == fourWheeler)
-            {
-                Console.WriteLine("No vehicles to unpark");
-            }
-            else
-            {
-            enterTokenIdNumber:
-                Console.WriteLine("Enter Ticket Id :");
-                int vehicleTokenId;
-
-                try
-                {
-                    vehicleTokenId = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (FormatException ex)
-                {
-                    Console.WriteLine("Enter valid Token id number");
-                    goto enterTokenIdNumber;
-                }
-                var index = ParkingSlots.fourWheeler.Length;
-                bool isVehicleExist = false;
-                for (int i = 0; i < ParkingSlots.fourWheeler.Length; i++)
-                {
-
-                    if (ParkingSlots.fourWheeler[i].TokenNumber == vehicleTokenId)
-                    {
-                        isVehicleExist = true;
-                        Console.WriteLine(ParkingSlots.fourWheeler[i].VehicleNumber);
-
-                        index = i;
-
-                        break;
-                    }
-
-                }
-                if (isVehicleExist == true)
-                {
-                    Console.WriteLine("Your Vehicle Number: "+ParkingSlots.fourWheeler[index].VehicleNumber);
-                    ParkingSlots.fourWheeler[index].OutTime = DateTime.Now;
-                    Console.WriteLine("Vehicle In time: " + ParkingSlots.fourWheeler[index].InTime);
-                    Console.WriteLine("Vehicle out time: " + ParkingSlots.fourWheeler[index].OutTime);
-                    ParkingSlots.fourWheeler[index].Duration = ParkingSlots.fourWheeler[index].OutTime.Subtract(ParkingSlots.fourWheeler[index].InTime);
-                    Console.WriteLine("Total duration of the vehicle: " + ParkingSlots.fourWheeler[index].Duration);
-                    ParkingSlots.fourWheeler[index].Amount = ParkingSlots.fourWheeler[index].Duration.TotalSeconds * 0.2; ;
-                    Console.WriteLine("Amount to be paid: " + ParkingSlots.fourWheeler[index].Amount+ "Rupees");
-                    ParkingSlots.fourWheeler[index] = null;
-
-                }
-            }
-        }
-        public void UnParkHeavyVehicle(int twoWheeler, int fourWheeler, int heavyVehicle)
-        {
-            int heavyVehicleSlotsOccupaid = ParkingSlots.heavyVehicle.Count(s => s != null);
-            int heavyVehicleSlotsAvailable = heavyVehicle - heavyVehicleSlotsOccupaid;
-            if (heavyVehicleSlotsAvailable == heavyVehicle)
-            {
-                Console.WriteLine("No vehicles to unpark");
-            }
-            else
-            {
-            enterTokenIdNumber:
-
-
-                Console.WriteLine("Enter Ticket Id :");
-                int vehicleTokenId;
-
-                try
-                {
-                    vehicleTokenId = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (FormatException ex)
-                {
-                    Console.WriteLine("Enter valid Token id number");
-                    goto enterTokenIdNumber;
-                }
-                var index = ParkingSlots.heavyVehicle.Length;
-                bool isVehicleExist = false;
-             
-                for (int i = 0; i < ParkingSlots.heavyVehicle.Length; i++)
-                {
-
-                    if (ParkingSlots.heavyVehicle[i].TokenNumber == vehicleTokenId)
-                    {
-                        isVehicleExist = true;
-                        Console.WriteLine(ParkingSlots.heavyVehicle[i].VehicleNumber);
-
-                        index = i;
-
-                        break;
-                    }
-
-                }
-                if (isVehicleExist == true)
-                {
-                    Console.WriteLine("Your vehicle Number: "+ParkingSlots.heavyVehicle[index].VehicleNumber);
-
-                    ParkingSlots.heavyVehicle[index].OutTime = DateTime.Now;
-                    Console.WriteLine("Vehicle In time: " + ParkingSlots.heavyVehicle[index].InTime);
-                    Console.WriteLine("Vehicle out time: " + ParkingSlots.heavyVehicle[index].OutTime);
-                    ParkingSlots.heavyVehicle[index].Duration = ParkingSlots.heavyVehicle[index].OutTime.Subtract(ParkingSlots.heavyVehicle[index].InTime);
-                    Console.WriteLine("Toatal duration of the vehicle: " + ParkingSlots.heavyVehicle[index].Duration);
-                    ParkingSlots.heavyVehicle[index].Amount = ParkingSlots.heavyVehicle[index].Duration.TotalSeconds * 0.3;
-                    Console.WriteLine("Amount to be paid: " + ParkingSlots.heavyVehicle[index].Amount+" Rupees");
-                    ParkingSlots.heavyVehicle[index] = null;
-
-                }
-            }
         }
         public void DisplayAllSlots(int twoWheeler, int fourWheeler, int heavyVehicle)
         {

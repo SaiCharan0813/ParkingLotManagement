@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 namespace ParkingLotManagement
@@ -8,9 +9,11 @@ namespace ParkingLotManagement
     {
         public static void Main(string[] args)
         {
+            
             Vehicle vehicles= new Vehicle();
             Console.WriteLine("-----Welcome to parking lot simulation------");
             int twoWheeler;
+            string slots;
         twoWheelerSlotsCount: Console.WriteLine("Enter the count of Two Wheeler Slots :");
 
             try
@@ -63,8 +66,8 @@ namespace ParkingLotManagement
             }
             ParkingSlots vehicle = new ParkingSlots();
             vehicle.SlotInitialization(twoWheeler,fourWheeler,heavyVehicle);
-            int userChoice = 0,userVehicleChoice=0; bool isOption = false;
-            while (isOption != true)
+            int userChoice = 0;ParkingSlots.VehicleType userVehicleChoice; bool isOptionValid = false;
+            while (isOptionValid != true)
             {
 
             enterUserChoice: Console.WriteLine("1.See Parking Lot current occupancy details\n2.Park Vehicle and Issue Ticket\n3.Un-park Vehicle\n4.Exit");
@@ -95,65 +98,67 @@ namespace ParkingLotManagement
 
                         try
                         {
-                            userVehicleChoice = Convert.ToInt32(Console.ReadLine());
+                            userVehicleChoice =(ParkingSlots.VehicleType) Convert.ToInt32(Console.ReadLine());
                         }
                         catch (FormatException ex)
                         {
                             Console.WriteLine("Enter valid choice");
                             goto chooseVehicleType;
                         }
-                        if (userVehicleChoice < 1 && userVehicleChoice > 3)
+                        if ((int)userVehicleChoice < 1 && (int)userVehicleChoice > 3)
                         {
                             Console.WriteLine("Enter valid choice");
                             goto chooseVehicleType;
                         }
-                        switch (userVehicleChoice)
+                        if ((int)userVehicleChoice == 1)
                         {
-                            case 1:
-                                vehicles.AddTwoWheeler();
-                                break;
-                            case 2:
-                                vehicles.AddFourWheeler();
-                                break;
-                            case 3:
-                                vehicles.AddHeavyVehicle();
-                                break;
+                            slots = "twoWheeler";
                         }
-
+                        else if ((int)userVehicleChoice==2)
+                        {
+                            slots = "fourWheeler";
+                        }
+                        else
+                        {
+                            slots = "heavyVehicle";
+                        }
+                        vehicles.AddVehicle(slots);
                         break;
                     case 3:
                     chooseUnParkingVehicleType: Console.WriteLine("1.Two Wheeler\n2.Four Wheeler\n3.Heavy vwhicle");
 
                         try
                         {
-                            userVehicleChoice = Convert.ToInt32(Console.ReadLine());
+                            userVehicleChoice = (ParkingSlots.VehicleType)Convert.ToInt32(Console.ReadLine());
                         }
                         catch (FormatException ex)
                         {
                             Console.WriteLine("Enter valid choice");
                             goto chooseUnParkingVehicleType;
                         }
-                        if (userVehicleChoice < 1 && userVehicleChoice > 3)
+                        if ((int)userVehicleChoice < 1 && (int)userVehicleChoice > 3)
                         {
                             Console.WriteLine("Enter valid choice");
                             goto chooseUnParkingVehicleType;
                         }
-                        switch (userVehicleChoice)
+                        if ((int)userVehicleChoice == 1)
                         {
-                            case 1:
-                                vehicles.UnParkTwoWheeler(twoWheeler, fourWheeler, heavyVehicle);
-                                break;
-                            case 2:
-                                vehicles.UnParkFourWheeler(twoWheeler, fourWheeler, heavyVehicle);
-                                break;
-                            case 3:
-                                vehicles.UnParkHeavyVehicle(twoWheeler, fourWheeler, heavyVehicle);
-                                break;
+                            slots = "twoWheeler";
                         }
+                        else if ((int)userVehicleChoice == 2)
+                        {
+                            slots = "fourWheeler";
+                        }
+                        else
+                        {
+                            slots = "heavyVehicle";
+                        }
+                        vehicles.UnParkVehicle(twoWheeler, fourWheeler, heavyVehicle,slots);
+                              
 
                         break;
                     case 4:
-                        isOption = true;
+                        isOptionValid = true;
                         break;
 
                 }
@@ -163,11 +168,3 @@ namespace ParkingLotManagement
         }
     }
 }
-
-
-
-
-
-
-
-
