@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ParkingLotManagement
 {
@@ -14,5 +10,6 @@ namespace ParkingLotManagement
         public DateTime OutTime { get; set; }
         public TimeSpan Duration { get; set; }
         public double Amount { get; set; }
+        public Vehicle vehicle = new Vehicle();     
     }
 }

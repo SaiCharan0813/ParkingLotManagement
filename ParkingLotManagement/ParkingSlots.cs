@@ -1,25 +1,74 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ParkingLotManagement
 {
     public class ParkingSlots
     {
-        public enum VehicleType
+        public static Ticket[] ?twoWheelerTickets;
+        public static Ticket[] ?fourWheelerTickets;
+        public static Ticket[] ?heavyVehicleTickets;
+        public int NumberOfTwoWheelers { get; private set; }
+        public int NumberOfFourWheelers { get; private set; }
+        public int NumberOfHeavyVehicles { get; private set; }
+
+        public void NumberOfVehicles()
         {
-            TwoWheeler=1,FourWheeler,HeavyVehicle
+            
+        twoWheelerSlotsCount: Console.WriteLine("Enter the count of Two Wheeler Slots :");
+
+            try
+            {
+                NumberOfTwoWheelers = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Enter  positive Integer value");
+                goto twoWheelerSlotsCount;
+            }
+            if (NumberOfTwoWheelers < 0)
+            {
+                Console.WriteLine("Enter Positive Integer value");
+                goto twoWheelerSlotsCount;
+            }
+        fourWheelerSlotsCount: Console.WriteLine("Enter the count of Four Wheeler Slots:");
+
+            try
+            {
+                NumberOfFourWheelers = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Enter Positive Integer value");
+                goto fourWheelerSlotsCount;
+            }
+            if (NumberOfFourWheelers < 0)
+            {
+                Console.WriteLine("Enter Positive Integer value");
+                goto fourWheelerSlotsCount;
+            }
+        heavyVehicleSlotsCount: Console.WriteLine("Enter the count of Heavy Vehicle Slots");
+
+            try
+            {
+                NumberOfHeavyVehicles = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Enter Positive Integer value");
+                goto heavyVehicleSlotsCount;
+            }
+            if (NumberOfHeavyVehicles < 0)
+            {
+                Console.WriteLine("Enter Positive Integer value");
+                goto heavyVehicleSlotsCount;
+            }
         }
-        public static Vehicle[] twoWheeler;
-        public static Vehicle[] fourWheeler;
-        public static Vehicle[] heavyVehicle;
-        public void SlotInitialization(int twoWheelerSlots, int fourWeelerSlots, int heavyVehicleSlots)
+        public void SlotInitialization()
         {
-            twoWheeler = new Vehicle[twoWheelerSlots];
-            fourWheeler = new Vehicle[fourWeelerSlots];
-            heavyVehicle = new Vehicle[heavyVehicleSlots];
+            twoWheelerTickets = new Ticket[NumberOfTwoWheelers];
+            fourWheelerTickets = new Ticket[NumberOfFourWheelers];
+            heavyVehicleTickets = new Ticket[NumberOfHeavyVehicles];
         }
+        
     }
 }
